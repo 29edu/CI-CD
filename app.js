@@ -115,7 +115,7 @@ const page = () => `<!doctype html>
 <body>
   <main class="card">
     <span class="badge"><span class="dot"></span>Deployed via Jenkins</span>
-    <h1>CI/CD Pipeline is Live</h1>
+    <h1>Auto-Deployed by Jenkins</h1>
     <p class="sub">
       This page was built and deployed automatically by a Jenkins pipeline
       running in Docker. Every push to <code>main</code> rebuilds this image
