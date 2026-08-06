@@ -1,5 +1,15 @@
 {
-  "name": "ci-cd-app",
-  "version": "1.0.0",
-  "main": "app.js"
+  "name": "edison-cicd-app",
+  "version": "2.0.0",
+  "description": "Node.js app deployed automatically by a Jenkins pipeline running in Docker",
+  "main": "app.js",
+  "author": "Edison Priyadarshi",
+  "license": "MIT",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/29edu/CI-CD.git"
+  }
 }

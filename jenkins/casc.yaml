@@ -1,0 +1,39 @@
+# Jenkins Configuration as Code - defines the controller and the pipeline job
+# so nothing has to be clicked through the setup wizard.
+jenkins:
+  systemMessage: "CI/CD Assignment - Edison Priyadarshi"
+  numExecutors: 2
+  scmCheckoutRetryCount: 2
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "${JENKINS_ADMIN_PASSWORD:-admin123}"
+  # Anonymous read keeps the dashboard viewable without logging in, which is
+  # convenient for a local demo. Drop this on any public/EC2 instance.
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: true
+
+unclassified:
+  location:
+    url: "http://localhost:8080/"
+
+jobs:
+  - script: >
+      pipelineJob('edison-cicd-pipeline') {
+        description('Builds and deploys edison-cicd-app on every push to main')
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote { url('https://github.com/29edu/CI-CD.git') }
+                branch('*/main')
+              }
+            }
+            scriptPath('Jenkinsfile')
+            lightweight(false)
+          }
+        }
+      }
