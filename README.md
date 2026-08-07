@@ -203,22 +203,23 @@ the exact image tag it is running.
 
 ### Pipeline stage view
 
-Both builds green across all seven stages. Build **#2** shows *1 commit* —
-that is the auto-triggered run.
+Four builds, green across all seven stages. Only **#1** was started by hand —
+**#2**, **#3** and **#4** each show *1 commit*, meaning polling picked up a
+push and ran them on its own.
 
 ![Jenkins stage view](screenshots/01-jenkins-pipeline-overview.png)
 
 ### Proof of automatic deployment
 
-Build **#2** was **"Started by an SCM change"** — nobody pressed *Build Now*.
+Build **#4** was **"Started by an SCM change"** — nobody pressed *Build Now*.
 A commit was pushed to GitHub, `pollSCM` noticed it within a minute, and the
-pipeline rebuilt and redeployed on its own.
+pipeline rebuilt the image and replaced the running container on its own.
 
 ![Auto-deploy proof](screenshots/04-auto-deploy-proof.png)
 
 ### Build console
 
-Full console output of build #2, ending in `Finished: SUCCESS`.
+Full console output of build #4, ending in `Finished: SUCCESS`.
 
 ![Jenkins console output](screenshots/02-jenkins-build-console.png)
 
@@ -229,13 +230,16 @@ Raw `docker ps` / `docker images` output is kept as text in
 greppable and verifiable:
 
 ```
-CONTAINER ID   IMAGE               STATUS                   PORTS                      NAMES
-25365de50aad   edison-jenkins      Up 6 minutes             0.0.0.0:8081->8080/tcp     edison-jenkins
-19d38f362590   edison-cicd-app:2   Up 9 minutes (healthy)   0.0.0.0:3000->3000/tcp     edison-cicd-container
+NAMES                   IMAGE               STATUS
+edison-cicd-container   edison-cicd-app:4   Up (healthy)   0.0.0.0:3000->3000/tcp
+edison-jenkins          edison-jenkins      Up             0.0.0.0:8081->8080/tcp
 
-IMAGE                    ID             DISK USAGE   CONTENT SIZE
-edison-cicd-app:1        7b68c200f22d        193MB         48.4MB
-edison-cicd-app:2        b4c860cb736e        193MB         48.4MB
-edison-cicd-app:latest   b4c860cb736e        193MB         48.4MB
-edison-jenkins:latest    0378bbb908a2       1.05GB          386MB
+edison-cicd-app:4        fcd7a7b8a722   <- currently deployed
+edison-cicd-app:latest   fcd7a7b8a722
+edison-cicd-app:3        db0e2efbd73a
+edison-cicd-app:2        b4c860cb736e
+edison-cicd-app:1        7b68c200f22d
 ```
+
+One image per build, with `:latest` tracking the newest — so any build can be
+rolled back to by tag.
