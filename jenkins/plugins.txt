@@ -1,4 +1,5 @@
 workflow-aggregator
+pipeline-stage-view
 git
 timestamper
 configuration-as-code

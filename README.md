@@ -191,13 +191,51 @@ npm start
 
 ## Screenshots
 
-Located in [`screenshots/`](screenshots):
+All captured from a real run of this pipeline. Jenkins was reached on port
+`8081` here because `8080` was already occupied on the host machine.
 
-| File | Shows |
-| --- | --- |
-| `01-jenkins-pipeline-overview.png` | Pipeline job with its stage-by-stage view |
-| `02-jenkins-build-console.png` | Console output of a successful build |
-| `03-app-running.png` | The deployed app in the browser |
-| `04-docker-ps.png` | `docker ps` — Jenkins and app containers side by side |
-| `05-docker-images.png` | `docker images` — tagged `edison-cicd-app` builds |
-| `06-auto-deploy-proof.png` | Build triggered automatically by a push, with an incremented build number |
+### The running app
+
+The deployed page, showing the build number, the commit it was built from and
+the exact image tag it is running.
+
+![Deployed app](screenshots/03-app-running.png)
+
+### Pipeline stage view
+
+Both builds green across all seven stages. Build **#2** shows *1 commit* —
+that is the auto-triggered run.
+
+![Jenkins stage view](screenshots/01-jenkins-pipeline-overview.png)
+
+### Proof of automatic deployment
+
+Build **#2** was **"Started by an SCM change"** — nobody pressed *Build Now*.
+A commit was pushed to GitHub, `pollSCM` noticed it within a minute, and the
+pipeline rebuilt and redeployed on its own.
+
+![Auto-deploy proof](screenshots/04-auto-deploy-proof.png)
+
+### Build console
+
+Full console output of build #2, ending in `Finished: SUCCESS`.
+
+![Jenkins console output](screenshots/02-jenkins-build-console.png)
+
+### Docker state
+
+Raw `docker ps` / `docker images` output is kept as text in
+[`screenshots/docker-output.txt`](screenshots/docker-output.txt) so it stays
+greppable and verifiable:
+
+```
+CONTAINER ID   IMAGE               STATUS                   PORTS                      NAMES
+25365de50aad   edison-jenkins      Up 6 minutes             0.0.0.0:8081->8080/tcp     edison-jenkins
+19d38f362590   edison-cicd-app:2   Up 9 minutes (healthy)   0.0.0.0:3000->3000/tcp     edison-cicd-container
+
+IMAGE                    ID             DISK USAGE   CONTENT SIZE
+edison-cicd-app:1        7b68c200f22d        193MB         48.4MB
+edison-cicd-app:2        b4c860cb736e        193MB         48.4MB
+edison-cicd-app:latest   b4c860cb736e        193MB         48.4MB
+edison-jenkins:latest    0378bbb908a2       1.05GB          386MB
+```

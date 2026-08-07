@@ -1,0 +1,20 @@
+Real command output captured 2026-08-06 23:58 UTC on the machine running this pipeline.
+
+$ docker ps
+CONTAINER ID   IMAGE               COMMAND                  CREATED         STATUS                   PORTS                                                                                          NAMES
+25365de50aad   edison-jenkins      "/usr/bin/tini -- /u…"   6 minutes ago   Up 6 minutes             0.0.0.0:50000->50000/tcp, [::]:50000->50000/tcp, 0.0.0.0:8081->8080/tcp, [::]:8081->8080/tcp   edison-jenkins
+19d38f362590   edison-cicd-app:2   "docker-entrypoint.s…"   9 minutes ago   Up 9 minutes (healthy)   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp                                                    edison-cicd-container
+8591c35d43b2   redis:alpine        "docker-entrypoint.s…"   2 months ago    Up 27 minutes            0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp                                                    redis-ecommerce
+
+$ docker images edison-cicd-app
+IMAGE                    ID             DISK USAGE   CONTENT SIZE   EXTRA
+edison-cicd-app:1        7b68c200f22d        193MB         48.4MB        
+edison-cicd-app:2        b4c860cb736e        193MB         48.4MB   U    
+edison-cicd-app:latest   b4c860cb736e        193MB         48.4MB   U    
+
+$ docker images edison-jenkins
+IMAGE                   ID             DISK USAGE   CONTENT SIZE   EXTRA
+edison-jenkins:latest   0378bbb908a2       1.05GB          386MB   U    
+
+$ curl -s http://localhost:3000/health
+{"status":"ok","owner":"Edison Priyadarshi","build":"2","commit":"bf2bb8db1c5b5f45813207fd1370b30e69dd5e86","image":"edison-cicd-app:2","deployedAt":"2026-08-06 23:48 UTC"}
