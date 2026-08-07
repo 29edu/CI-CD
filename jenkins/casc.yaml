@@ -24,6 +24,12 @@ jobs:
   - script: >
       pipelineJob('edison-cicd-pipeline') {
         description('Builds and deploys edison-cicd-app on every push to main')
+        // Also declared in the Jenkinsfile. It is repeated here because this
+        // seed job runs on every restart and would otherwise reset the job's
+        // triggers, leaving polling off until someone built by hand.
+        triggers {
+          scm('* * * * *')
+        }
         definition {
           cpsScm {
             scm {
